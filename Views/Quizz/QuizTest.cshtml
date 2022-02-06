@@ -1,0 +1,330 @@
+﻿@model IQueryable<FunActivityApp.viewModels.QuestionVM>
+
+@{
+    int count = 1, countR = 0;
+    //var endTime = DateTime.UtcNow.AddSeconds(10);
+    //var endTime = (DateTime)ViewBag.TimeExpire;
+    //var timeRemaining = TimeSpan.FromTicks(endTime.Ticks - DateTime.UtcNow.Ticks).TotalSeconds.ToString("#");
+}
+<div class="container">
+
+    <!-- User Info -->
+    <div class="userConnected" style="border:2px dashed #cecaca; border-radius: 10px; margin-top: 3%;">
+        @{ Html.RenderPartial("_UserInfo");}
+    </div>
+
+    <div class="Quiz">
+        <div></div>
+        <div class="row">
+            <div class="col-md-12">
+                <div>Page expires  in <span id="time"></span> secs!</div>
+            </div>
+        </div>
+
+        <div id="questionsDisplay" class="carousel slide" data-wrap="true">
+            @if (Model != null && Model.Any())
+            {
+                <div class="carousel-inner">
+                    @foreach (var question in Model)
+                    {
+
+                        if (count == 1)
+                        {
+                            <div class="carousel-item active">
+                                <span class="label label-warning"> @string.Format("{0}{1}.", "Q", count)</span>
+                                <span id="@string.Format("{0}{1}", "ID_Q", count)" style="display:none;">@question.QuestionID</span>
+                                <p style="display: inline; padding: 2%;" id="@string.Format("{0}{1}", "Q", count)">@question.QuestionText</p>
+
+                                <div class="Choices" style="margin-left: 8%;">
+                                    @foreach (var choice in question.Choices)
+                                    {
+                                        <label class="radio-inline">
+                                            <input type="radio" name="@string.Format("{0}{1}", "inlineRadioOptions",count)" id="@string.Format("{0}{1}", "inlineRadio", countR)" value="@choice.ChoiceText" style="margin-left: -16px;"> @choice.ChoiceText
+                                        </label><br />
+                                        countR++;
+                                    }
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="carousel-item">
+                                <span class="label label-warning"> @string.Format("{0}{1}.", "Q", count)</span>
+                                <span id="@string.Format("{0}{1}", "ID_Q", count)" style="display:none;">@question.QuestionID</span>
+                                <p style="display: inline; padding: 2%;" id="@string.Format("{0}{1}", "Q", count)">@question.QuestionText</p>
+
+                                <div class="Choices" style="margin-left: 8%;">
+                                    @foreach (var choice in question.Choices)
+                                    {
+                                        <label class="radio-inline">
+                                            <input type="radio" name="@string.Format("{0}{1}", "inlineRadioOptions",count)" id="@string.Format("{0}{1}", "inlineRadio", countR)" value="@choice.ChoiceText" style="margin-left: -16px;"> @choice.ChoiceText
+                                        </label><br />
+                                        countR++;
+                                    }
+                                </div>
+                            </div>
+                        }
+
+                        count++;
+                    }
+                    <div class="carousel-item">
+                        <p style="display: inline; padding: 2%;" id="Last Page">You have reached the end of this Quiz!! </p>
+                    </div>
+                </div>
+
+                <span id="countQuections" style="display:none;">@count</span>
+                <button type="button" id="SubmitQuiz" class="btn btn-primary" style="margin-top: 10px;"><span class="glyphicon glyphicon-ok"></span>   Submit Answer </button>
+                <button type="button" id="Next" class="btn btn-info" style="margin-top: 10px;"><span class="glyphicon glyphicon-forward"></span>   Next </button>
+
+            }
+        </div>
+    </div> <!-- END QUIZ -->
+</div> <!-- END CONTAINER -->
+
+@section MyScritps
+{
+    <script type="text/javascript">
+        @*var remSeconds = @timeRemaining;
+        var secondCounter = remSeconds % 60;*@
+        var cansubmit = true;
+        //var _tick = 0;
+        var currentQuestion = 1;
+        var timerInterVal = 0;
+
+        //Timer Starts
+        function startTimer(duration, display) {
+            var start = Date.now(),
+                diff,
+                minutes,
+                seconds;
+            function timer() {
+                // get the number of seconds that have elapsed since
+                // startTimer() was called
+                diff = duration - (((Date.now() - start) / 1000) | 0);
+
+                // does the same job as parseInt truncates the float
+                minutes = (diff / 60) | 0;
+                seconds = (diff % 60) | 0;
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                display.textContent = minutes + ":" + seconds;
+
+                if (diff <= 0) {
+                    // add one second so that the count down starts at the full duration
+                    // example 05:00 not 04:59
+                    start = Date.now() + 1000;
+                    submitAnswers(currentQuestion);
+                }
+            };
+            // we don't want to wait a full second before the timer starts
+            timer();
+            timerInterVal = setInterval(timer, 1000);
+        }
+
+        window.onload = function () {
+            var expTime = 65,
+                display = document.querySelector('#time');
+            startTimer(expTime, display);
+        };
+         //Timer Ends
+
+        //check for Navigation Timing API support
+        if (window.performance) {
+            console.info("window.performance works fine on this browser");
+        }
+        if (performance.navigation.type == 1) {
+            alert("This page is reloaded"); //Restrict the User for the current question
+            //$('.Quiz').hide();
+            //$("#myForm :input").prop('readonly', true);
+            remSeconds = 0;
+            secondCounter = 0;
+            cansubmit = false;
+            document.location.href = "/";
+
+        } else {
+            console.info("This page is not reloaded");
+        }
+
+        $(document).ready(function () {
+            document.getElementById("helpMe").innerHTML = "EXIT";
+            document.getElementById("nbarBrand").innerHTML = "I've a hint for you. Click Me 🎅? ";
+            //var registerLink = document.getElementById('registerLink');
+            //var loginLink = document.getElementById('loginLink');
+
+            //// Hide
+            //registerLink.style.display = "none";
+            //loginLink.style.display = "none";
+
+            // Show again
+            //element.style.display = "";
+
+            //Carousel slide - Start
+
+            $('.carousel').carousel('pause');
+
+            $('#Next').click(function () {
+                if (currentQuestion < @count) {
+                    $('.carousel').carousel('next');
+                    currentQuestion++;
+                    //Stop the Timer
+                    clearInterval(timerInterVal);
+                    //End
+
+                    // Clear the all the radio button from previous questions
+                    $("input[type='radio']:checked").each(function () {
+                        $(this).prop('checked', false);
+                    });
+                    //End
+
+                    display = document.querySelector('#time');
+                    startTimer(65, display);
+                    document.getElementById('SubmitQuiz').disabled = false;
+                }
+                //alert(currentQuestion+ "" + @count);
+                if (currentQuestion == @count) {
+                    Swal.fire(
+                        'Good job!',
+                        'You at the end of the quiz!',
+                        'success'
+                    );
+                    //cansubmit = false;
+                    document.getElementById('SubmitQuiz').disabled = true;
+                    document.getElementById('Next').disabled = true;
+                    //Clear the Timer
+                    clearInterval(timerInterVal);
+            //End
+
+                }
+            });
+            //Carousel slide - End
+
+            $('#nbarBrand').click(function () {
+                let timerInterval
+                Swal.fire({
+                    title: 'Wait. I am Thinking..',
+                    html: 'I will close in <b></b> milliseconds.The answer is .... ',
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: () => {
+                        Swal.showLoading()
+                        const b = Swal.getHtmlContainer().querySelector('b')
+                        timerInterval = setInterval(() => {
+                            b.textContent = Swal.getTimerLeft()
+                        }, 100)
+                    },
+                    willClose: () => {
+                        clearInterval(timerInterval)
+                    }
+                }).then((result) => {
+                    /* Read more about handling dismissals below */
+                    if (result.dismiss === Swal.DismissReason.timer) {
+                        console.log('I was closed by the timer')
+                    }
+                })
+                //swal('Uh no, you clicked on me. Let me see ');
+                document.getElementById("nbarBrand").href = 'javascript:void(0);'; // Console log warning is there. Need to resolve
+            });
+
+           // document.getElementById("startExam").children[0].style.display = "none";
+
+            //            document.getElementById("nbarBrand").innerHTML = "🎲 🤪 🧩 You're in surveillance area.Focus on xam. Do not try to click on me 🧸 🤣 🤠";
+            //$("a").removeAttr("href");
+
+            $('#SubmitQuiz').on('click', function () {
+                debugger;
+                if (!$("input[type='radio']:checked").val()) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Com' + "'" + 'on,',
+                        text: 'nothing is selected!',
+                        showConfirmButton: true,
+                        timer: 5000
+                    })
+                    return false;
+                }
+                else {
+                    submitAnswers(currentQuestion);
+                }
+
+            });
+
+            if (!cansubmit) {
+                document.getElementById('SubmitQuiz').disabled = true;
+            }
+
+        });
+
+        function submitAnswers(currentQuestion) {
+            cansubmit = false;
+            //Clear the Timer
+            clearInterval(timerInterVal);
+            //End
+
+            // var resultQuiz = [], countQuestion = parseInt(sel), question = {}, j = 1;
+            var resultQuiz = []
+               // for (var i = 1; i < countQuestion; i++) {
+                    question = {
+                        QuestionID: $('#ID_Q' + currentQuestion).text(),
+                        QuestionText: $('#Q' + currentQuestion).text(),
+                        AnswerQ: $('input[name=inlineRadioOptions' + currentQuestion + ']:checked').val()
+                    }
+                  //  var min = remSeconds;
+                  //  var RemSec = secondCounter;
+                  //  question.remMin = remSeconds;
+                  //  question.remSec= Sec;
+                  //  //Object.assign(question, { minutes: RemSec });
+                  //  //Object.assign(question, { RemSec: secondCounter });
+                  //var test= JSON.stringify(question);
+            resultQuiz.push(question);
+               // }
+
+                $.ajax({
+
+                    type: 'POST',
+                    url: '@Url.Action("QuizTest", "Quizz")',
+                    data: { resultQuiz },
+
+                    success: function (response) {
+                        if (response.result.length > 0)
+                        {
+                            if (response.result[0].isCorrect == true)
+                                {
+                                    Swal.fire({
+                                        title: '<div class="alert alert-success" role="alert"><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>🎊 Yes, that is right.🎉 </div>',
+                                        icon: 'success',
+                                        showConfirmButton: true,
+                                        timer: 5000
+                                    })
+                                   // $('#AnsQ' + j).html('<div class="alert alert-success" role="alert"><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>You are dead right (there) </div>');
+                                }
+                                else
+                                {
+                                    Swal.fire({
+                                        title: '<div class="alert alert-danger" role="alert"> <span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span> I am sorry,The Answer is ' + response.result[0].AnswerQ + '</b></div>',
+                                        icon: 'error',
+                                        showConfirmButton: true,
+                                        timer: 5000
+                                    })
+                                   // $('#AnsQ' + j).html('<div class="alert alert-danger" role="alert"> <span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span> I am sorry 🙈- The Answer is <b>' + response.result[i].AnswerQ + '</b></div>');
+                                }
+                        }
+                        else
+                        {
+                            alert("Something Wrong");
+                        }
+                        if (!cansubmit) {
+                            document.getElementById('SubmitQuiz').disabled = true;
+                           // clearInterval(_tick);
+                        }
+                        //console.log(response.result.length);
+
+                    },
+                    error: function (response) {
+                        alert("Something Wrong");
+                    }
+                });
+        }
+    </script>
+}

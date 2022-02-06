@@ -1,0 +1,23 @@
+﻿@model FunActivityApp.viewModels.UserVM
+
+@{
+    ViewBag.Title = "User";
+}
+
+<div class="panel panel-default" style="width: 37%; margin: 20% 32%;">
+    <div class="panel-heading">Please enter your id</div>
+    <div class="panel-body">
+
+        @using (Html.BeginForm("GetUser", "Quizz", FormMethod.Post))
+        {
+            @Html.EditorFor(c => c.FullName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Employee ID", @style = "width:100%; margin-left: 15px;" } })<br />
+            <button type="submit" id="Enter" class="btn btn-info btn-lg" style="width:100%;"><span class="glyphicon glyphicon-user"></span>   Enter</button>
+        }
+    </div>
+    <div class="panel-footer">
+        @*@if (ViewBag.Msg != null)
+        {
+            <div class="well well-sm well-danger"> @ViewBag.Msg </div>
+        }*@
+    </div>
+</div>

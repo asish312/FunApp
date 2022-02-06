@@ -1,0 +1,150 @@
+﻿@model FunActivityApp.viewModels.UserVM
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+    <h1>Welcome to Fun Activity</h1>
+    <div id="welcomeMsg-strings">
+        <p>I hope <strong> you</strong> are doing well today.</p>
+        <p>Feel free to spend sometime to explore the available options present on the screen.</p>
+        <p>Click<strong><em> Start</em> button </strong> to get started</p>
+    </div>
+    <span id="welcomeMsg"></span><p></p>
+    @*<p>
+            <div id="typed-strings" class="lead">
+                <span id="welcomeMsg"></span>
+            </div>
+        </p>*@
+    @*<p><a href="#" onclick="myfunction()" class="btn btn-primary btn-default">Click here to start &raquo;</a></p>*@
+    <div class="form-row align-items-center">
+
+        @using (Html.BeginForm("GetUser", "Quizz", FormMethod.Post))
+        {
+            <div class="col-auto">
+                <label class="sr-only" for="inlineFormInputGroup">Username</label>
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">@@</div>
+                    </div>
+                    @*<input type="text" class="form-control" id="inlineFormInputGroup" placeholder="Username">*@
+                    @Html.EditorFor(c => c.FullName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Username", @id = "inlineFormInputGroup", @type = "text" } })
+                    <br />
+                </div>
+            </div>
+
+            <div class="col-auto">
+                <button type="submit" id="Enter" class="btn btn-primary btn-default">Start &raquo;</button>
+                @*<p><a href="#" id="Enter" class="btn btn-primary btn-default">Click here to start &raquo;</a></p>*@
+            </div>
+        }
+    </div>
+    <p>
+        <div class="panel-body">
+        </div>
+        <div class="panel-footer">
+            @if (ViewBag.Msg != null)
+            {
+                <script type="text/javascript">
+                   // document.getElementById('typed-strings').innerHTML = "";
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Sorry',
+                        text: '@ViewBag.Msg'
+                    })
+                </script>
+                @*<div class="well well-sm well-danger"> @ViewBag.Msg </div>*@
+            }
+        </div>
+    </p>
+</div>
+
+@section MyScritps
+{
+    <script type="text/javascript">
+        var typed = new Typed('#welcomeMsg', {
+            stringsElement: '#welcomeMsg-strings',
+            typeSpeed: 50,
+            backSpeed: 0,
+            backDelay: 500,
+            startDelay: 1000,
+            loop: false,
+            smartBackspace: true
+        });
+
+        var typed1 = new Typed('#inlineFormInputGroup', {
+            strings: ['Hola..😁', 'Hi There..👋 ', 'May I know you 🧐?', 'User Name'],
+            typeSpeed: 50,
+            backSpeed: 0,
+            attr: 'placeholder',
+            bindInputFocusEvents: true,
+            loop: false,
+            startDelay: 19060,
+        });
+
+        window.onload = function () {
+            //document.getElementById('typed-strings').innerHTML = "";
+            //var typed = new Typed('#typed', {
+            //    stringsElement: '#typed-strings'
+            //});
+        };
+        $(document).ready(function () {
+            //Todo Session Model data bind to JS
+            var sesionValue = '@Request.RequestContext.HttpContext.Session["UserConnected"]';
+
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+
+        //window.onload = function () {
+        //    var welcomeMsg = new Typed('#welcomeMsg', {
+        //        strings: ['I hope <strong> you</strong> are doing well today.', 'It <em>types</em> out sentences. So you may not see me again.', ' Please feel free to spend sometime to explore the available options present on the screen.'],
+        //        typeSpeed: 50,
+        //        backSpeed: 0,
+        //        backDelay: 500,
+        //        startDelay: 1000,
+        //        smartBackspace: true, // this is a default
+        //        loop: false
+        //    });
+
+        //}
+
+        //var inlineFormInputGroup = new Typed('#inlineFormInputGroup', {
+        //    strings: ['User Name'],
+        //    typeSpeed: 01,
+        //    backSpeed: 01,
+        //    attr: 'placeholder',
+        //    bindInputFocusEvents: true,
+        //    loop: true
+        //});
+
+        var xhttp = new XMLHttpRequest();
+        get_joke_of_the_day();
+
+        $('#nbarBrand').click(function () {
+            document.getElementById("nbarBrand").href = 'javascript:void(0);'; // Console log warning is there. Need to resolve
+        });
+        var objectA = {};
+        function get_joke_of_the_day() {
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    // Access the result here
+                    //alert(this.responseText);
+                    objectA = JSON.parse(xhttp.responseText);
+                    $('#nbarBrand').text(objectA.setup);
+                    $("#nbarBrand").attr('title', objectA.delivery);
+                    $('#nbarBrand').attr('data-toggle', 'tooltip');
+
+                    $("#nbarBrandHelp").attr('title', objectA.delivery);
+                    $('#nbarBrandHelp').attr('data-toggle', 'tooltip');
+                }
+            };
+            // https://icanhazdadjoke.com/slack
+            // bored: https://www.boredapi.com/documentation
+            // https://api.chucknorris.io/jokes/random?category=dev
+           xhttp.open("GET", "https://v2.jokeapi.dev/joke/Programming,Christmas", true);
+           xhttp.setRequestHeader("Content-type", "application/json");
+          //  xhttp.setRequestHeader("X-JokesOne-Api-Secret", "YOUR API HERE");
+          xhttp.send();
+        }
+    </script>
+}

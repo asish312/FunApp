@@ -1,0 +1,51 @@
+﻿@model FunActivityApp.viewModels.QuizVM
+
+@{
+    ViewBag.Title = "SelectQuizz";
+}
+<div class="jumbotron">
+
+    <div class="userConnected" style="border: 2px dashed #cecaca; border-radius: 10px; margin-top: -5%;">
+        @{ Html.RenderPartial("_UserInfo");}
+    </div>
+    <p>
+        <div id="welcomeMsg-strings">
+            <p>Hey <strong>Asish</strong>I hope you are doing well. My record says, You are from the PP Team and working as a Dev.</p>
+            <p>I see,You love Photography and are good at this. That is amazing. It is time to interact with your colleagues and see who wins the games </p>
+            <p>If you think my memories are faded then please go to the registration section and update.</p>
+        </div>
+    </p>
+    <div class="SelQuiz">
+        <div class="panel panel-default" style="width: 37%; margin: 10% 32%;">
+            @*<div class="panel-heading">Select Your Quiz</div>*@
+            <div class="panel-body">
+
+                @using (Html.BeginForm("SelectQuizz", "Quizz", FormMethod.Post))
+                {
+                    @Html.DropDownListFor(model => model.QuizID, Model.ListOfQuizz, new { @class = "form-control", aria_describedby = "dropdownMenuButton" })<br />
+                    <button type="submit" id="Enter" class="btn btn-success btn-lg" style="width:100%;"><span class="glyphicon glyphicon-ok"></span>   Let's GO </button>
+                }
+            </div>
+        </div>
+    </div>
+</div>  <!-- END CONTAINER -->
+
+@section MyScritps
+{
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            //Todo
+            //var model = {
+            //    UserID: "",
+            //    FullName: "",
+            //    ProfilImage: "", Team: "", Role: "", Location: "", Address: "", Hby: "", Skill: ""
+            //};
+          var sessionValue = '@Request.RequestContext.HttpContext.Session["UserConnected"]';
+
+            document.getElementById("nbarBrand").innerHTML = "Are you ready to GO ?";
+            document.getElementById("nbarBrandHelp").style.display = "none";
+        })
+    </script>
+
+}
