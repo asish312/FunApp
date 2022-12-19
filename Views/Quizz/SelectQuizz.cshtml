@@ -6,7 +6,7 @@
 <div class="jumbotron">
 
     <div class="userConnected" style="border: 2px dashed #cecaca; border-radius: 10px; margin-top: -5%;">
-        @{ Html.RenderPartial("_UserInfo");}
+        @{ Html.RenderPartial("_UserInfo"); }
     </div>
     <p>
         <div id="welcomeMsg-strings">
@@ -16,19 +16,19 @@
         </div>
     </p>
     <div class="SelQuiz">
-        <div class="panel panel-default" style="width: 37%; margin: 10% 32%;">
+        <div class="panel panel-default" style="margin: 10% 32%; width: 37%;">
             @*<div class="panel-heading">Select Your Quiz</div>*@
             <div class="panel-body">
 
                 @using (Html.BeginForm("SelectQuizz", "Quizz", FormMethod.Post))
                 {
-                    @Html.DropDownListFor(model => model.QuizID, Model.ListOfQuizz, new { @class = "form-control", aria_describedby = "dropdownMenuButton" })<br />
-                    <button type="submit" id="Enter" class="btn btn-success btn-lg" style="width:100%;"><span class="glyphicon glyphicon-ok"></span>   Let's GO </button>
+                    @Html.DropDownListFor(model => model.QuizID, Model.ListOfQuizz, new { @class = "form-control", aria_describedby = "dropdownMenuButton" })<br/>
+                    <button type="submit" id="Enter" class="btn btn-success btn-lg" style="width: 100%;"><span class="glyphicon glyphicon-ok"></span> Let's GO </button>
                 }
             </div>
         </div>
     </div>
-</div>  <!-- END CONTAINER -->
+</div> <!-- END CONTAINER -->
 
 @section MyScritps
 {

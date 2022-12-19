@@ -7,9 +7,10 @@ namespace FunActivityApp.Controllers
     public class HomeController : Controller
     {
         public Entities dbContext = new Entities();
+
         public ActionResult Index()
         {
-            UserVM vM = new UserVM();
+            var vM = new UserVM();
             //return View(vM);
             return View();
         }

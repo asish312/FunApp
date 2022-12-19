@@ -27,37 +27,35 @@ namespace FunActivityApp.Controllers
         public ActionResult GetUser(UserVM user)
         {
             //Handle Error userid
-            UserVM userConnected = dbContext.Users.Where(u => u.FullName == user.FullName)
-                                         .Select(u => new UserVM
-                                         {
-                                             UserID = u.UserID,
-                                             FullName = u.FullName,
-                                             ProfilImage = u.ProfilImage,
-                                             Team = u.Team,
-                                             Role = u.Role,
-                                             Location = u.Location,
-                                             Address = u.Address,
-                                             Hby = u.Hobbies,
-                                             Skill = u.Skillsets
-                                         }).FirstOrDefault();
+            var userConnected = dbContext.Users.Where(u => u.FullName == user.FullName)
+                .Select(u => new UserVM
+                {
+                    UserID = u.UserID,
+                    FullName = u.FullName,
+                    ProfilImage = u.ProfilImage,
+                    Team = u.Team,
+                    Role = u.Role,
+                    Location = u.Location,
+                    Address = u.Address,
+                    Hby = u.Hobbies,
+                    Skill = u.Skillsets
+                }).FirstOrDefault();
 
             if (userConnected != null)
             {
                 Session["UserConnected"] = userConnected;
                 return RedirectToAction("SelectQuizz");
             }
-            else
-            {
-                ViewBag.Msg = "User is not found. Please register or contact admin !!";
-                return View("../Home/index");
-                //  return View();
-            }
+
+            ViewBag.Msg = "User is not found. Please register or contact admin !!";
+            return View("../Home/index");
+            //  return View();
         }
 
         [HttpGet]
         public ActionResult SelectQuizz()
         {
-            QuizVM quiz = new viewModels.QuizVM();
+            var quiz = new QuizVM();
             quiz.ListOfQuizz = dbContext.Quizs.Select(q => new SelectListItem
             {
                 Text = q.QuizName,
@@ -73,10 +71,10 @@ namespace FunActivityApp.Controllers
         [HttpPost]
         public ActionResult SelectQuizz(QuizVM quiz)
         {
-            QuizVM quizSelected = dbContext.Quizs.Where(q => q.QuizID == quiz.QuizID).Select(q => new QuizVM
+            var quizSelected = dbContext.Quizs.Where(q => q.QuizID == quiz.QuizID).Select(q => new QuizVM
             {
                 QuizID = q.QuizID,
-                QuizName = q.QuizName,
+                QuizName = q.QuizName
             }).FirstOrDefault();
 
             if (quizSelected != null)
@@ -85,29 +83,28 @@ namespace FunActivityApp.Controllers
 
                 return RedirectToAction("QuizTest");
             }
+
             return View();
         }
 
         [HttpGet]
         public ActionResult QuizTest()
         {
-            QuizVM quizSelected = Session["SelectedQuiz"] as QuizVM;
+            var quizSelected = Session["SelectedQuiz"] as QuizVM;
             IQueryable<QuestionVM> questions = null;
 
             if (quizSelected != null)
-            {
                 questions = dbContext.Questions.Where(q => q.Quiz.QuizID == quizSelected.QuizID)
-                   .Select(q => new QuestionVM
-                   {
-                       QuestionID = q.QuestionID,
-                       QuestionText = q.QuestionText,
-                       Choices = q.Choices.Select(c => new ChoiceVM
-                       {
-                           ChoiceID = c.ChoiceID,
-                           ChoiceText = c.ChoiceText
-                       }).ToList()
-                   }).AsQueryable();
-            }
+                    .Select(q => new QuestionVM
+                    {
+                        QuestionID = q.QuestionID,
+                        QuestionText = q.QuestionText,
+                        Choices = q.Choices.Select(c => new ChoiceVM
+                        {
+                            ChoiceID = c.ChoiceID,
+                            ChoiceText = c.ChoiceText
+                        }).ToList()
+                    }).AsQueryable();
             ViewBag.TimeExpire = DateTime.UtcNow.AddSeconds(65);
             return View(questions);
         }
@@ -119,27 +116,30 @@ namespace FunActivityApp.Controllers
             var userInfo = Session["UserConnected"];
 
             var userInfoVM = (UserVM)userInfo;
-            List<QuizAnswersVM> finalResultQuiz = new List<viewModels.QuizAnswersVM>();
+            var finalResultQuiz = new List<QuizAnswersVM>();
             try
             {
-                foreach (QuizAnswersVM answser in resultQuiz)
+                foreach (var answser in resultQuiz)
                 {
-                    var result = dbContext.Answers.Where(a => a.QuestionID == answser.QuestionID).Select(a => new QuizAnswersVM
-                    {
-                        QuestionID = a.QuestionID.Value,
-                        AnswerQ = a.AnswerText,
-                        isCorrect = answser.AnswerQ == null ? false : (answser.AnswerQ.ToLower().Equals(a.AnswerText.ToLower())),
-                        isAnswered = answser.AnswerQ == null ? false : true
-                    }).FirstOrDefault();
+                    var result = dbContext.Answers.Where(a => a.QuestionID == answser.QuestionID).Select(a =>
+                        new QuizAnswersVM
+                        {
+                            QuestionID = a.QuestionID.Value,
+                            AnswerQ = a.AnswerText,
+                            isCorrect = answser.AnswerQ == null
+                                ? false
+                                : answser.AnswerQ.ToLower().Equals(a.AnswerText.ToLower()),
+                            isAnswered = answser.AnswerQ == null ? false : true
+                        }).FirstOrDefault();
 
                     finalResultQuiz.Add(result);
 
                     using (var context = new Entities())
                     {
-                        var qUserAns = new QuizUserAnswer()
+                        var qUserAns = new QuizUserAnswer
                         {
                             QuestionID = answser.QuestionID,
-                            AnswerTime = System.DateTime.Now,
+                            AnswerTime = DateTime.Now,
                             IsRight = result.isCorrect,
                             UserID = userInfoVM.UserID,
                             IsAnswered = result.isAnswered
@@ -163,6 +163,7 @@ namespace FunActivityApp.Controllers
                 // LogHelper.Log(SourceType.File).LogError("Error Message : " + ex.StackTrace + ex.Message);
                 // return GetErrorView();
             }
+
             return Json(new { result = finalResultQuiz }, JsonRequestBehavior.AllowGet);
         }
     }

@@ -10,7 +10,8 @@
         <p>Feel free to spend sometime to explore the available options present on the screen.</p>
         <p>Click<strong><em> Start</em> button </strong> to get started</p>
     </div>
-    <span id="welcomeMsg"></span><p></p>
+    <span id="welcomeMsg"></span>
+    <p></p>
     @*<p>
             <div id="typed-strings" class="lead">
                 <span id="welcomeMsg"></span>
@@ -28,8 +29,8 @@
                         <div class="input-group-text">@@</div>
                     </div>
                     @*<input type="text" class="form-control" id="inlineFormInputGroup" placeholder="Username">*@
-                    @Html.EditorFor(c => c.FullName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Username", @id = "inlineFormInputGroup", @type = "text" } })
-                    <br />
+                    @Html.EditorFor(c => c.FullName, new { htmlAttributes = new { @class = "form-control", placeholder = "Username", id = "inlineFormInputGroup", type = "text" } })
+                    <br/>
                 </div>
             </div>
 
@@ -142,10 +143,10 @@
             // bored: https://www.boredapi.com/documentation
             // https://api.chucknorris.io/jokes/random?category=dev
 
-            //xhttp.open("GET", "https://v2.jokeapi.dev/joke/Programming,Christmas", true);
-           //xhttp.setRequestHeader("Content-type", "application/json");
-          //xhttp.setRequestHeader("X-JokesOne-Api-Secret", "YOUR API HERE");
-          //xhttp.send();
+            xhttp.open("GET", "https://v2.jokeapi.dev/joke/Programming,Christmas", true);
+            xhttp.setRequestHeader("Content-type", "application/json");
+           //xhttp.setRequestHeader("X-JokesOne-Api-Secret", "YOUR API HERE");
+            xhttp.send();
         }
     </script>
 }

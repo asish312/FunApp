@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 
@@ -32,8 +33,9 @@ namespace FunActivityApp.viewModels
         public string Anwser { get; set; }
         public ICollection<ChoiceVM> Choices { get; set; }
 
-        [Display(Name = "My Date:"), DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy}", ApplyFormatInEditMode = true)]
-        public System.DateTime ReaminTime { get; set; }
+        [Display(Name = "My Date:")]
+        [DisplayFormat(DataFormatString = "{0:dd-MMM-yyyy}", ApplyFormatInEditMode = true)]
+        public DateTime ReaminTime { get; set; }
     }
 
     public class ChoiceVM

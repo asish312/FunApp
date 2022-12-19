@@ -9,15 +9,15 @@
 <div class="container">
 
     <!-- User Info -->
-    <div class="userConnected" style="border:2px dashed #cecaca; border-radius: 10px; margin-top: 3%;">
-        @{ Html.RenderPartial("_UserInfo");}
+    <div class="userConnected" style="border: 2px dashed #cecaca; border-radius: 10px; margin-top: 3%;">
+        @{ Html.RenderPartial("_UserInfo"); }
     </div>
 
     <div class="Quiz">
         <div></div>
         <div class="row">
             <div class="col-md-12">
-                <div>Page expires  in <span id="time"></span> secs!</div>
+                <div>Page expires in <span id="time"></span> secs!</div>
             </div>
         </div>
 
@@ -27,20 +27,20 @@
                 <div class="carousel-inner">
                     @foreach (var question in Model)
                     {
-
                         if (count == 1)
                         {
                             <div class="carousel-item active">
                                 <span class="label label-warning"> @string.Format("{0}{1}.", "Q", count)</span>
-                                <span id="@string.Format("{0}{1}", "ID_Q", count)" style="display:none;">@question.QuestionID</span>
+                                <span id="@string.Format("{0}{1}", "ID_Q", count)" style="display: none;">@question.QuestionID</span>
                                 <p style="display: inline; padding: 2%;" id="@string.Format("{0}{1}", "Q", count)">@question.QuestionText</p>
 
                                 <div class="Choices" style="margin-left: 8%;">
                                     @foreach (var choice in question.Choices)
                                     {
                                         <label class="radio-inline">
-                                            <input type="radio" name="@string.Format("{0}{1}", "inlineRadioOptions",count)" id="@string.Format("{0}{1}", "inlineRadio", countR)" value="@choice.ChoiceText" style="margin-left: -16px;"> @choice.ChoiceText
-                                        </label><br />
+                                            <input type="radio" name="@string.Format("{0}{1}", "inlineRadioOptions", count)" id="@string.Format("{0}{1}", "inlineRadio", countR)" value="@choice.ChoiceText" style="margin-left: -16px;"> @choice.ChoiceText
+                                        </label>
+                                        <br/>
                                         countR++;
                                     }
                                 </div>
@@ -50,15 +50,16 @@
                         {
                             <div class="carousel-item">
                                 <span class="label label-warning"> @string.Format("{0}{1}.", "Q", count)</span>
-                                <span id="@string.Format("{0}{1}", "ID_Q", count)" style="display:none;">@question.QuestionID</span>
+                                <span id="@string.Format("{0}{1}", "ID_Q", count)" style="display: none;">@question.QuestionID</span>
                                 <p style="display: inline; padding: 2%;" id="@string.Format("{0}{1}", "Q", count)">@question.QuestionText</p>
 
                                 <div class="Choices" style="margin-left: 8%;">
                                     @foreach (var choice in question.Choices)
                                     {
                                         <label class="radio-inline">
-                                            <input type="radio" name="@string.Format("{0}{1}", "inlineRadioOptions",count)" id="@string.Format("{0}{1}", "inlineRadio", countR)" value="@choice.ChoiceText" style="margin-left: -16px;"> @choice.ChoiceText
-                                        </label><br />
+                                            <input type="radio" name="@string.Format("{0}{1}", "inlineRadioOptions", count)" id="@string.Format("{0}{1}", "inlineRadio", countR)" value="@choice.ChoiceText" style="margin-left: -16px;"> @choice.ChoiceText
+                                        </label>
+                                        <br/>
                                         countR++;
                                     }
                                 </div>
@@ -72,10 +73,9 @@
                     </div>
                 </div>
 
-                <span id="countQuections" style="display:none;">@count</span>
-                <button type="button" id="SubmitQuiz" class="btn btn-primary" style="margin-top: 10px;"><span class="glyphicon glyphicon-ok"></span>   Submit Answer </button>
-                <button type="button" id="Next" class="btn btn-info" style="margin-top: 10px;"><span class="glyphicon glyphicon-forward"></span>   Next </button>
-
+                <span id="countQuections" style="display: none;">@count</span>
+                <button type="button" id="SubmitQuiz" class="btn btn-primary" style="margin-top: 10px;"><span class="glyphicon glyphicon-ok"></span> Submit Answer </button>
+                <button type="button" id="Next" class="btn btn-info" style="margin-top: 10px;"><span class="glyphicon glyphicon-forward"></span> Next </button>
             }
         </div>
     </div> <!-- END QUIZ -->
